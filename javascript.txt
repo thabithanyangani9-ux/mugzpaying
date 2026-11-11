@@ -1,0 +1,96 @@
+
+const searchInput = document.getElementById("recipient-search");
+const resultsBox = document.getElementById("search-results");
+const recipientInput = document.getElementById("recipient-id");
+const waveForm = document.getElementById("wave-form");
+const messageBox = document.getElementById("wave-message");
+
+const csrfToken = document.querySelector(
+  'meta[name="csrf-token"]'
+)?.content;
+
+if (searchInput) {
+  let searchTimer;
+
+  searchInput.addEventListener("input", () => {
+    clearTimeout(searchTimer);
+
+    searchTimer = setTimeout(async () => {
+      const query = searchInput.value.trim();
+      resultsBox.innerHTML = "";
+
+      if (query.length < 2) return;
+
+      try {
+        const response = await fetch(
+          `/api/search?q=${encodeURIComponent(query)}`
+        );
+
+        if (!response.ok) throw new Error("Search failed");
+
+        const users = await response.json();
+
+        if (users.length === 0) {
+          resultsBox.textContent = "No matching recipients found.";
+          return;
+        }
+
+        users.forEach(user => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = "result";
+          button.textContent = `${user.name} — ${user.mugz_id}`;
+
+          button.addEventListener("click", () => {
+            recipientInput.value = user.mugz_id;
+            resultsBox.innerHTML = "";
+            searchInput.value = `${user.name} selected`;
+          });
+
+          resultsBox.appendChild(button);
+        });
+      } catch (error) {
+        resultsBox.textContent = "Unable to search right now.";
+      }
+    }, 300);
+  });
+}
+
+if (waveForm) {
+  waveForm.addEventListener("submit", async event => {
+    event.preventDefault();
+    messageBox.textContent = "Creating payment request...";
+
+    const payload = {
+      recipient: recipientInput.value.trim(),
+      amount: document.getElementById("amount").value,
+      method: document.getElementById("method").value
+    };
+
+    try {
+      const response = await fetch("/api/wave", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": csrfToken
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || "Request failed.");
+      }
+
+      messageBox.textContent =
+        `${result.message} Reference: ${result.reference}`;
+
+      waveForm.reset();
+
+      setTimeout(() => window.location.reload(), 1800);
+    } catch (error) {
+      messageBox.textContent = error.message;
+    }
+  });
+}
