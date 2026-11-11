@@ -1,6 +1,0 @@
-
-OPENAI_API_KEY = "your-openai-api-key"
-OPENAI_MODEL = "gpt-4.1-mini"
-BRAVE_API_KEY = "your-brave-search-api-key"
-INITIAL_ADMIN_USER = "schooladmin"
-INITIAL_ADMIN_PASSWORD = "replace-with-a-long-random-password"
