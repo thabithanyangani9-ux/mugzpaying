@@ -1,0 +1,23 @@
+
+{% extends "base.html" %}
+{% block title %}Customer account | HARMONYMUGZ BANK{% endblock %}
+{% block content %}
+<section class="dashboard">
+    <p class="eyebrow">CUSTOMER PORTAL</p>
+    <h1>Welcome, {{ user.full_name }}</h1>
+    <div class="account-card">
+        <small>YOUR CUSTOMER PROFILE</small>
+        <h2>{{ user.full_name }}</h2>
+        <p>{{ user.email }}</p>
+        <p>Customer profile created: {{ user.created_at.strftime('%d %B %Y') }}</p>
+    </div>
+
+    <div class="features">
+        <article><h3>Accounts</h3><p>Bank account integration will appear here.</p></article>
+        <article><h3>Payments</h3><p>Secure payment services will be connected through an authorised provider.</p></article>
+        <article><h3>Statements</h3><p>Verified transaction statements will appear here after integration.</p></article>
+    </div>
+
+    <p class="notice">No live bank account, balance or payment connection has been configured yet.</p>
+</section>
+{% endblock %}
