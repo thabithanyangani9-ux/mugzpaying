@@ -1,0 +1,22 @@
+
+{% extends "base.html" %}
+{% block title %}Sign in | HARMONYMUGZ BANK{% endblock %}
+{% block content %}
+<div class="form-card">
+    <h1>Welcome back</h1>
+    <p>Sign in to your customer profile.</p>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <label>{{ form.email.label }}</label>
+        {{ form.email(class="field", placeholder="Email address") }}
+        {% for error in form.email.errors %}<small>{{ error }}</small>{% endfor %}
+
+        <label>{{ form.password.label }}</label>
+        {{ form.password(class="field", placeholder="Password") }}
+        {% for error in form.password.errors %}<small>{{ error }}</small>{% endfor %}
+
+        {{ form.submit(class="button full") }}
+    </form>
+    <p>New customer? <a href="/register">Create a profile</a></p>
+</div>
+{% endblock %}
